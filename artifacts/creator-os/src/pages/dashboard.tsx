@@ -281,6 +281,58 @@ export default function Dashboard() {
           </Card>
         </motion.div>
       )}
+
+      {/* AI-Powered Insights */}
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
+        <Card className="bg-gradient-to-br from-zinc-950/80 via-card to-orange-950/20 border border-orange-500/15 shadow-[0_0_30px_rgba(249,115,22,0.07)]">
+          <CardHeader className="pb-3 border-b border-border/40">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <span className="text-base">🧠</span>
+                AI-POWERED INSIGHTS
+              </CardTitle>
+              <span className="text-[10px] uppercase tracking-widest text-orange-400/70 font-semibold bg-orange-400/8 border border-orange-400/15 px-2 py-0.5 rounded-full">Live Analysis</span>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-4 space-y-4">
+            {/* Insight 1 */}
+            <motion.div
+              className="flex gap-3 p-3.5 rounded-xl bg-amber-400/5 border border-amber-400/15 hover:border-amber-400/30 transition-colors"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.62 }}
+            >
+              <span className="text-xl mt-0.5">💡</span>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-foreground leading-snug">
+                  "Price-related" comments convert at <span className="text-amber-400 font-black">35%</span> when AI uses the 'Discount' Tool.
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  When your avatar detects keywords like "kitna hai", "price bata", or "costly hai", triggering an exclusive discount nudge increases purchase rate from 18% → 35%. Recommend activating the Discount Tool for all active campaigns.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Insight 2 */}
+            <motion.div
+              className="flex gap-3 p-3.5 rounded-xl bg-orange-400/5 border border-orange-400/15 hover:border-orange-400/30 transition-colors"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.70 }}
+            >
+              <span className="text-xl mt-0.5">💡</span>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-foreground leading-snug">
+                  Your Hinglish slang setting is outperforming pure English replies by <span className="text-orange-400 font-black">2.5x</span> in DMs.
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  DMs with "bhai", "scene set hai", and "ekdum sahi" in responses show a 2.5× higher reply rate and 1.8× faster conversion compared to formal English templates. Your avatar's Hinglish mode is your biggest moat — keep it tuned.
+                </p>
+              </div>
+            </motion.div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }

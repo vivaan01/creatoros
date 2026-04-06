@@ -1,16 +1,27 @@
 import { db, creatorProfileTable, campaignsTable, productsTable, trackingLinksTable, conversationsTable, messagesTable } from "@workspace/db";
+import { eq } from "drizzle-orm";
 import { logger } from "./logger";
 
 export async function seedIfEmpty() {
   try {
     const existing = await db.select().from(creatorProfileTable).limit(1);
-    if (existing.length > 0) return;
+
+    if (existing.length > 0) {
+      // Always ensure the profile name/handle is correct
+      if (existing[0].name !== "Vivaan Sharma") {
+        await db.update(creatorProfileTable)
+          .set({ name: "Vivaan Sharma", handle: "@vivaanshharma" })
+          .where(eq(creatorProfileTable.id, existing[0].id));
+        logger.info("Updated creator profile name to Vivaan Sharma");
+      }
+      return;
+    }
 
     logger.info("Seeding database with default data...");
 
     await db.insert(creatorProfileTable).values({
-      name: "Arjun Sharma",
-      handle: "@arjunstylez",
+      name: "Vivaan Sharma",
+      handle: "@vivaanshharma",
       platform: "instagram",
       followerCount: 248000,
       avatarEnabled: true,
@@ -38,11 +49,11 @@ export async function seedIfEmpty() {
     ]);
 
     await db.insert(trackingLinksTable).values([
-      { shortCode: "bw2k26", destinationUrl: "https://bewakoof.com/hoodies?ref=arjun", campaignId: campaigns[0].id, label: "Bewakoof Hoodie Drop", totalClicks: 3840, uniqueClicks: 2610, conversions: 187, revenue: "298700" },
-      { shortCode: "mm2c26", destinationUrl: "https://mamaearth.in/vitc-serum?ref=arjun", campaignId: campaigns[1].id, label: "Mamaearth Vit C", totalClicks: 2960, uniqueClicks: 2140, conversions: 143, revenue: "198400" },
-      { shortCode: "nz_clr6", destinationUrl: "https://gonoise.com/colfit-pro6?ref=arjun", campaignId: campaigns[2].id, label: "Noise Watch Collab", totalClicks: 5120, uniqueClicks: 3890, conversions: 312, revenue: "562500" },
-      { shortCode: "tss_anime", destinationUrl: "https://thesouledstore.com/anime?ref=arjun", campaignId: campaigns[3].id, label: "Anime Tees Drop", totalClicks: 1240, uniqueClicks: 940, conversions: 58, revenue: "72400" },
-      { shortCode: "mca_scrub", destinationUrl: "https://mcaffeine.com/bodyscrub?ref=arjun", campaignId: campaigns[4].id, label: "MCaffeine Coffee Kit", totalClicks: 890, uniqueClicks: 680, conversions: 34, revenue: "38200" },
+      { shortCode: "bw2k26", destinationUrl: "https://bewakoof.com/hoodies?ref=vivaan", campaignId: campaigns[0].id, label: "Bewakoof Hoodie Drop", totalClicks: 3840, uniqueClicks: 2610, conversions: 187, revenue: "298700" },
+      { shortCode: "mm2c26", destinationUrl: "https://mamaearth.in/vitc-serum?ref=vivaan", campaignId: campaigns[1].id, label: "Mamaearth Vit C", totalClicks: 2960, uniqueClicks: 2140, conversions: 143, revenue: "198400" },
+      { shortCode: "nz_clr6", destinationUrl: "https://gonoise.com/colfit-pro6?ref=vivaan", campaignId: campaigns[2].id, label: "Noise Watch Collab", totalClicks: 5120, uniqueClicks: 3890, conversions: 312, revenue: "562500" },
+      { shortCode: "tss_anime", destinationUrl: "https://thesouledstore.com/anime?ref=vivaan", campaignId: campaigns[3].id, label: "Anime Tees Drop", totalClicks: 1240, uniqueClicks: 940, conversions: 58, revenue: "72400" },
+      { shortCode: "mca_scrub", destinationUrl: "https://mcaffeine.com/bodyscrub?ref=vivaan", campaignId: campaigns[4].id, label: "MCaffeine Coffee Kit", totalClicks: 890, uniqueClicks: 680, conversions: 34, revenue: "38200" },
     ]);
 
     const convs = await db.insert(conversationsTable).values([

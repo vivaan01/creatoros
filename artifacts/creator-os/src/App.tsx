@@ -19,6 +19,7 @@ const Campaigns = React.lazy(() => import("@/pages/campaigns"));
 const Products = React.lazy(() => import("@/pages/products"));
 const Links = React.lazy(() => import("@/pages/links"));
 const Conversations = React.lazy(() => import("@/pages/conversations"));
+const AuraFarming = React.lazy(() => import("@/pages/aura-farming"));
 const Report = React.lazy(() => import("@/pages/report"));
 
 import { SidebarLayout } from "@/components/layout/sidebar-layout";
@@ -39,7 +40,6 @@ function ProtectedRoutes() {
   useEffect(() => {
     const check = () => setAuthed(!!localStorage.getItem("cos_authed"));
     window.addEventListener("storage", check);
-    // Poll for localStorage updates from Login page
     const interval = setInterval(check, 300);
     return () => {
       window.removeEventListener("storage", check);
@@ -61,6 +61,7 @@ function ProtectedRoutes() {
           <Route path="/products" component={Products} />
           <Route path="/links" component={Links} />
           <Route path="/conversations" component={Conversations} />
+          <Route path="/aura-farming" component={AuraFarming} />
           <Route path="/report" component={Report} />
           <Route component={NotFound} />
         </Switch>

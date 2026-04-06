@@ -172,6 +172,7 @@ function AutoVibeSyncPanel({ onExtracted }: {
               <p className="text-xs text-muted-foreground mb-4">
                 Prompt: <span className="italic text-foreground/70">"Tell me what you sell, how you treat your fans, and what your brand stands for. Speak naturally in Hinglish."</span>
               </p>
+              <p className="text-sm font-semibold text-orange-300 mb-3 text-center tracking-wide">Capture my Aura.</p>
               <Button
                 onClick={startRecording}
                 className="w-full gap-2 bg-orange-500 hover:bg-orange-600 text-white"

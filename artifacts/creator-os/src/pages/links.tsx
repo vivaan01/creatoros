@@ -13,11 +13,10 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Link2, Plus, Copy, TrendingUp, Shield, Fingerprint,
   Cpu, Globe, Code2, QrCode, ArrowRight, Smartphone,
-  ShoppingCart, BarChart3, Zap, Target,
+  BarChart3, Zap, Target,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-// ── Feature card data ────────────────────────────────────────────────────────
 const FEATURES = [
   {
     icon: Link2,
@@ -62,7 +61,7 @@ const FEATURES = [
   {
     icon: BarChart3,
     title: "ROAS & LTV Tracking",
-    desc: "Measure Return on Ad Spend and Lifetime Value broken down by campaign, channel, and creative — exactly what brands need to justify spend.",
+    desc: "Measure Return on Ad Spend and Lifetime Value broken down by campaign, channel, and creative — exactly what brands need.",
     badge: "Analytics",
     color: "text-emerald-400",
     bg: "bg-emerald-500/10 border-emerald-500/20",
@@ -94,7 +93,7 @@ const FEATURES = [
   {
     icon: Code2,
     title: "API-First & Webhooks",
-    desc: "Bulk link generation via API and live attribution webhooks — plug Linkrunner into any workflow or data warehouse.",
+    desc: "Bulk link generation via API and live attribution webhooks — plug Data Foot Print into any workflow or data warehouse.",
     badge: "Developer",
     color: "text-indigo-400",
     bg: "bg-indigo-500/10 border-indigo-500/20",
@@ -109,26 +108,20 @@ const FEATURES = [
   },
 ];
 
-// ── How It Works steps ───────────────────────────────────────────────────────
 const HOW_IT_WORKS = [
-  { icon: Link2, step: "01", title: "Link Created", desc: "Generate a Linkrunner shortlink for your campaign, product, or collab." },
-  { icon: Smartphone, step: "02", title: "User Clicks", desc: "Device, OS, and routing context are detected in milliseconds." },
-  { icon: Globe, step: "03", title: "Smart Route", desc: "App installed? Open the exact in-app screen. Not installed? Go to the store." },
-  { icon: Cpu, step: "04", title: "Intent Preserved", desc: "After install, deferred deep linking restores the original destination." },
-  { icon: Fingerprint, step: "05", title: "Event Attributed", desc: "Install, open, and every subsequent action tied back to the source click." },
-  { icon: Target, step: "06", title: "Postback Fired", desc: "Purchase and event data sent to your ad platform for bidding optimization." },
-  { icon: BarChart3, step: "07", title: "Analytics Shown", desc: "Clicks, installs, ROAS, LTV — by channel, campaign, and creative." },
+  { icon: Link2,        step: "01", title: "Link Created",      desc: "Generate a Data Foot Print shortlink for your campaign, product, or collab." },
+  { icon: Smartphone,   step: "02", title: "User Clicks",       desc: "Device, OS, and routing context are detected in milliseconds." },
+  { icon: Globe,        step: "03", title: "Smart Route",       desc: "App installed? Open the exact in-app screen. Not installed? Go to the store." },
+  { icon: Cpu,          step: "04", title: "Intent Preserved",  desc: "After install, deferred deep linking restores the original destination." },
+  { icon: Fingerprint,  step: "05", title: "Event Attributed",  desc: "Install, open, and every subsequent action tied back to the source click." },
+  { icon: Target,       step: "06", title: "Postback Fired",    desc: "Purchase and event data sent to your ad platform for bidding optimization." },
+  { icon: BarChart3,    step: "07", title: "Analytics Shown",   desc: "Clicks, installs, ROAS, LTV — by channel, campaign, and creative." },
 ];
 
-// ── Feature Card ─────────────────────────────────────────────────────────────
 function FeatureCard({ feature, delay }: { feature: typeof FEATURES[0]; delay: number }) {
   const Icon = feature.icon;
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.35 }}
-    >
+    <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, duration: 0.35 }}>
       <Card className={`h-full border ${feature.bg} bg-card/40 hover:bg-card/70 transition-colors duration-200 group`}>
         <CardContent className="p-4 flex flex-col gap-2 h-full">
           <div className="flex items-start justify-between">
@@ -139,7 +132,7 @@ function FeatureCard({ feature, delay }: { feature: typeof FEATURES[0]; delay: n
               {feature.badge}
             </Badge>
           </div>
-          <p className="text-sm font-semibold leading-snug group-hover:text-foreground/90 transition-colors">{feature.title}</p>
+          <p className="text-sm font-semibold leading-snug">{feature.title}</p>
           <p className="text-xs text-muted-foreground leading-relaxed flex-1">{feature.desc}</p>
         </CardContent>
       </Card>
@@ -147,7 +140,6 @@ function FeatureCard({ feature, delay }: { feature: typeof FEATURES[0]; delay: n
   );
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
 export default function Links() {
   const { data: links, isLoading } = useListLinks();
   const { data: campaigns } = useListCampaigns();
@@ -197,15 +189,14 @@ export default function Links() {
 
   return (
     <div className="space-y-10 max-w-7xl mx-auto">
-      {/* ── Page Header ── */}
+      {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-border pb-6">
         <div>
           <h1 className="text-3xl font-black tracking-tight flex items-center gap-2.5">
-            <TrendingUp className="h-7 w-7 text-primary" />
-            Sales Funnel
+            💰 Revenue per Click 🪙
           </h1>
-          <p className="text-muted-foreground mt-1.5 text-sm max-w-xl">
-            Powered by Linkrunner — attribute every sale from comment to checkout, across every platform.
+          <p className="text-muted-foreground mt-1 text-sm">
+            Powered by <span className="text-primary font-semibold">Data Foot Print</span> — you can see your sales funnel.
           </p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
@@ -253,11 +244,11 @@ export default function Links() {
         </Dialog>
       </div>
 
-      {/* ── What Makes Linkrunner Different ── */}
+      {/* ── What Makes Data Foot Print Different ── */}
       <section className="space-y-4">
         <div className="flex items-center gap-3">
           <Zap className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-bold">What Makes Linkrunner Different</h2>
+          <h2 className="text-lg font-bold">What Makes Data Foot Print Different</h2>
           <div className="flex-1 h-px bg-border/40" />
           <span className="text-xs text-muted-foreground">11 differentiators</span>
         </div>
@@ -275,12 +266,8 @@ export default function Links() {
           <h2 className="text-lg font-bold">How It Works</h2>
           <div className="flex-1 h-px bg-border/40" />
         </div>
-
-        {/* Flow — horizontal scroll on mobile, wrapped on desktop */}
         <div className="relative">
-          {/* connector line */}
           <div className="hidden lg:block absolute top-[38px] left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent pointer-events-none" />
-
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
             {HOW_IT_WORKS.map((step, i) => {
               const Icon = step.icon;
@@ -292,11 +279,9 @@ export default function Links() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.07 }}
                 >
-                  {/* Node */}
-                  <div className="relative z-10 w-[52px] h-[52px] rounded-full bg-card border border-orange-500/30 flex items-center justify-center shadow-[0_0_12px_rgba(249,115,22,0.12)] group hover:border-orange-400/60 hover:shadow-[0_0_18px_rgba(249,115,22,0.25)] transition-all">
+                  <div className="relative z-10 w-[52px] h-[52px] rounded-full bg-card border border-orange-500/30 flex items-center justify-center shadow-[0_0_12px_rgba(249,115,22,0.12)] hover:border-orange-400/60 hover:shadow-[0_0_18px_rgba(249,115,22,0.25)] transition-all">
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
-                  {/* Arrow between steps */}
                   {i < HOW_IT_WORKS.length - 1 && (
                     <ArrowRight className="hidden lg:block absolute top-[16px] -right-2 h-4 w-4 text-orange-500/40 z-20" />
                   )}
@@ -310,8 +295,6 @@ export default function Links() {
             })}
           </div>
         </div>
-
-        {/* Platform postback pill row */}
         <div className="flex flex-wrap items-center gap-2 pt-1">
           <span className="text-xs text-muted-foreground">Postbacks to:</span>
           {["Meta", "Google", "TikTok", "Apple Search Ads", "Snapchat"].map((p) => (
@@ -328,7 +311,6 @@ export default function Links() {
           <div className="flex-1 h-px bg-border/40" />
           <span className="text-xs text-muted-foreground">{links?.length ?? 0} links</span>
         </div>
-
         <Card className="bg-card/50 border-border/50">
           <CardContent className="p-0">
             <Table>
