@@ -1,19 +1,18 @@
-import React, { useEffect } from "react";
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import React, { useEffect, useState } from "react";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import Login from "@/pages/login";
 
-// Ensure dark mode is active
 const ThemeInitializer = () => {
   useEffect(() => {
-    document.documentElement.classList.add('dark');
+    document.documentElement.classList.add("dark");
   }, []);
   return null;
 };
 
-// Pages
 const Dashboard = React.lazy(() => import("@/pages/dashboard"));
 const AvatarEngine = React.lazy(() => import("@/pages/avatar"));
 const Campaigns = React.lazy(() => import("@/pages/campaigns"));
@@ -33,7 +32,25 @@ const queryClient = new QueryClient({
   },
 });
 
-function Router() {
+function ProtectedRoutes() {
+  const [authed, setAuthed] = useState(!!localStorage.getItem("cos_authed"));
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    const check = () => setAuthed(!!localStorage.getItem("cos_authed"));
+    window.addEventListener("storage", check);
+    // Poll for localStorage updates from Login page
+    const interval = setInterval(check, 300);
+    return () => {
+      window.removeEventListener("storage", check);
+      clearInterval(interval);
+    };
+  }, []);
+
+  if (!authed) {
+    return <Login />;
+  }
+
   return (
     <SidebarLayout>
       <React.Suspense fallback={<div className="p-8 text-muted-foreground">Loading...</div>}>
@@ -58,7 +75,7 @@ function App() {
       <TooltipProvider>
         <ThemeInitializer />
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
+          <ProtectedRoutes />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>
