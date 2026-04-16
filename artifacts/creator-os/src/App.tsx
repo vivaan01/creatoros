@@ -5,11 +5,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/login";
+import { AuroraCursor } from "@/components/aurora-cursor";
+import { WaitlistButton } from "@/components/waitlist-modal";
 
 const ThemeInitializer = () => {
-  useEffect(() => {
-    document.documentElement.classList.add("dark");
-  }, []);
+  useEffect(() => { document.documentElement.classList.add("dark"); }, []);
   return null;
 };
 
@@ -25,12 +25,7 @@ const Report = React.lazy(() => import("@/pages/report"));
 import { SidebarLayout } from "@/components/layout/sidebar-layout";
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      refetchOnWindowFocus: false,
-    },
-  },
+  defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false } },
 });
 
 function ProtectedRoutes() {
@@ -41,15 +36,10 @@ function ProtectedRoutes() {
     const check = () => setAuthed(!!localStorage.getItem("cos_authed"));
     window.addEventListener("storage", check);
     const interval = setInterval(check, 300);
-    return () => {
-      window.removeEventListener("storage", check);
-      clearInterval(interval);
-    };
+    return () => { window.removeEventListener("storage", check); clearInterval(interval); };
   }, []);
 
-  if (!authed) {
-    return <Login />;
-  }
+  if (!authed) return <Login />;
 
   return (
     <SidebarLayout>
@@ -75,8 +65,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeInitializer />
+        <AuroraCursor />
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <ProtectedRoutes />
+          <WaitlistButton />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>
