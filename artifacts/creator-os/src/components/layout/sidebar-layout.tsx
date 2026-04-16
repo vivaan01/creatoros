@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard, Bot, Megaphone, ShoppingBag, TrendingUp,
-  MessageSquare, FileText, LogOut, Sprout, Menu, X,
+  MessageSquare, FileText, LogOut, Sprout, Menu, X, ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -18,14 +18,14 @@ const NAV_COLORS: Record<string, { text: string; glow: string; bg: string; borde
 };
 
 const navigation = [
-  { name: "Dashboard",             href: "/",              icon: LayoutDashboard },
-  { name: "Avatar",                href: "/avatar",        icon: Bot             },
-  { name: "Brand Collabs",         href: "/campaigns",     icon: Megaphone       },
-  { name: "My Products",           href: "/products",      icon: ShoppingBag     },
-  { name: "Revenue per Click 💰",  href: "/links",         icon: TrendingUp      },
-  { name: "Conversations",         href: "/conversations", icon: MessageSquare   },
-  { name: "Aura Farming 🌾",       href: "/aura-farming",  icon: Sprout          },
-  { name: "Report",                href: "/report",        icon: FileText        },
+  { name: "Dashboard",            href: "/",              icon: LayoutDashboard },
+  { name: "Avatar",               href: "/avatar",        icon: Bot             },
+  { name: "Brand Collabs",        href: "/campaigns",     icon: Megaphone       },
+  { name: "My Products",          href: "/products",      icon: ShoppingBag     },
+  { name: "Revenue per Click 💰", href: "/links",         icon: TrendingUp      },
+  { name: "Conversations",        href: "/conversations", icon: MessageSquare   },
+  { name: "Aura Farming 🌾",      href: "/aura-farming",  icon: Sprout          },
+  { name: "Report",               href: "/report",        icon: FileText        },
 ];
 
 const BOTTOM_TABS = [
@@ -40,59 +40,135 @@ function NavLink({ item, onClick }: { item: typeof navigation[0]; onClick?: () =
   const isActive = location === item.href;
   const colors = NAV_COLORS[item.href] ?? { text: "text-foreground", glow: "", bg: "bg-muted", border: "border-border" };
   return (
-    <Link
-      href={item.href}
-      onClick={onClick}
+    <Link href={item.href} onClick={onClick}
       className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium border ${
         isActive
           ? `${colors.bg} ${colors.text} ${colors.border} ${colors.glow}`
           : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
-      }`}
-    >
+      }`}>
       <item.icon className={`h-4 w-4 shrink-0 ${isActive ? colors.text : ""}`} />
       <span className="truncate">{item.name}</span>
     </Link>
   );
 }
 
+/* ── Welcome banner (shown once after demo login) ── */
+function WelcomeBanner() {
+  const name = localStorage.getItem("cos_user_name");
+  const [visible, setVisible] = useState(() => {
+    return !!name && !sessionStorage.getItem("cos_banner_dismissed");
+  });
+  if (!visible || !name) return null;
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+        className="mx-4 mt-4 mb-0 px-4 py-3 rounded-xl border border-orange-500/25 bg-orange-500/8 flex items-center justify-between gap-3"
+      >
+        <p className="text-sm font-semibold">
+          🙏 Welcome &amp; Namaste, <span className="text-orange-400">{name}</span>! Let's build your creator empire.
+        </p>
+        <button onClick={() => { sessionStorage.setItem("cos_banner_dismissed", "1"); setVisible(false); }}
+          className="text-muted-foreground hover:text-foreground shrink-0">
+          <X className="h-4 w-4" />
+        </button>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 export function SidebarLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  useEffect(() => { setDrawerOpen(false); }, [location]);
+  // Desktop hover-reveal sidebar state
+  const [desktopOpen, setDesktopOpen] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  // Track mouse X to reveal sidebar when near left edge
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (e.clientX <= 8) {
+      clearTimeout(hoverTimeoutRef.current);
+      setDesktopOpen(true);
+    }
+  }, []);
+
+  // Hide sidebar when mouse leaves the sidebar panel
+  const handleSidebarLeave = useCallback(() => {
+    hoverTimeoutRef.current = setTimeout(() => setDesktopOpen(false), 120);
+  }, []);
+  const handleSidebarEnter = useCallback(() => {
+    clearTimeout(hoverTimeoutRef.current);
+  }, []);
+
   useEffect(() => {
-    document.body.style.overflow = drawerOpen ? "hidden" : "";
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => { window.removeEventListener("mousemove", handleMouseMove); clearTimeout(hoverTimeoutRef.current); };
+  }, [handleMouseMove]);
+
+  useEffect(() => { setMobileDrawerOpen(false); setDesktopOpen(false); }, [location]);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileDrawerOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [drawerOpen]);
+  }, [mobileDrawerOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem("cos_authed");
+    localStorage.removeItem("cos_user_name");
+    localStorage.removeItem("cos_welcomed");
+    sessionStorage.removeItem("cos_banner_dismissed");
     window.location.href = "/";
   };
 
   return (
     <div className="min-h-screen bg-background flex">
 
-      {/* ── DESKTOP SIDEBAR ── */}
-      <div className="hidden md:flex w-64 border-r border-border bg-card/80 backdrop-blur flex-col shrink-0 fixed top-0 left-0 h-screen z-30">
-        <div className="p-4 mb-4">
-          <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-300">
-            CreatorOS
-          </h1>
-          <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Bharat Edition</p>
-        </div>
-        <nav className="flex flex-col gap-1 flex-1 px-4 overflow-y-auto">
-          {navigation.map((item) => <NavLink key={item.href} item={item} />)}
-        </nav>
-        <div className="p-4 border-t border-border/50">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all w-full border border-transparent"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </button>
-        </div>
+      {/* ── DESKTOP HOVER SIDEBAR (overlay, not in flow) ── */}
+      <div className="hidden md:block">
+        {/* Invisible left-edge trigger strip */}
+        <div className="fixed top-0 left-0 h-full w-2 z-30" onMouseEnter={() => { clearTimeout(hoverTimeoutRef.current); setDesktopOpen(true); }} />
+
+        {/* Sidebar panel */}
+        <motion.div
+          ref={sidebarRef}
+          className="fixed top-0 left-0 h-screen w-64 z-40 flex flex-col border-r border-border bg-card/95 backdrop-blur-xl shadow-2xl"
+          initial={false}
+          animate={{ x: desktopOpen ? 0 : -260 }}
+          transition={{ type: "spring", stiffness: 340, damping: 34 }}
+          onMouseEnter={handleSidebarEnter}
+          onMouseLeave={handleSidebarLeave}
+        >
+          <div className="p-4 mb-2">
+            <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-300">
+              CreatorOS
+            </h1>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Bharat Edition</p>
+          </div>
+          <nav className="flex flex-col gap-1 flex-1 px-4 overflow-y-auto">
+            {navigation.map((item) => <NavLink key={item.href} item={item} />)}
+          </nav>
+          <div className="p-4 border-t border-border/50">
+            <button onClick={handleLogout}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all w-full border border-transparent">
+              <LogOut className="h-4 w-4" /> Sign Out
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Peek indicator — visible when sidebar is hidden */}
+        <AnimatePresence>
+          {!desktopOpen && (
+            <motion.div
+              className="fixed top-1/2 left-0 -translate-y-1/2 z-30 flex items-center justify-center w-5 h-12 rounded-r-lg bg-card/80 border border-l-0 border-border cursor-pointer"
+              initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -4 }}
+              onClick={() => setDesktopOpen(true)}
+            >
+              <ChevronRight className="h-3 w-3 text-muted-foreground" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ── MOBILE TOP BAR ── */}
@@ -103,24 +179,19 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
           </h1>
           <p className="text-[9px] text-muted-foreground uppercase tracking-widest">Bharat Edition</p>
         </div>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="p-2 rounded-lg bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Open menu"
-        >
+        <button onClick={() => setMobileDrawerOpen(true)}
+          className="p-2 rounded-lg bg-muted/50 text-muted-foreground" aria-label="Open menu">
           <Menu className="h-5 w-5" />
         </button>
       </div>
 
-      {/* ── SLIDE-OUT DRAWER ── */}
+      {/* ── MOBILE SLIDE-OUT DRAWER ── */}
       <AnimatePresence>
-        {drawerOpen && (
+        {mobileDrawerOpen && (
           <>
-            <motion.div
-              className="md:hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+            <motion.div className="md:hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setDrawerOpen(false)}
-            />
+              onClick={() => setMobileDrawerOpen(false)} />
             <motion.div
               className="md:hidden fixed top-0 left-0 bottom-0 z-50 w-72 bg-card border-r border-border flex flex-col"
               initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
@@ -131,20 +202,17 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                   <h1 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-300">CreatorOS</h1>
                   <p className="text-[9px] text-muted-foreground uppercase tracking-widest mt-0.5">Bharat Edition</p>
                 </div>
-                <button onClick={() => setDrawerOpen(false)} className="p-2 rounded-lg bg-muted/50 text-muted-foreground">
+                <button onClick={() => setMobileDrawerOpen(false)} className="p-2 rounded-lg bg-muted/50 text-muted-foreground">
                   <X className="h-4 w-4" />
                 </button>
               </div>
               <nav className="flex flex-col gap-1 flex-1 p-3 overflow-y-auto">
-                {navigation.map((item) => <NavLink key={item.href} item={item} onClick={() => setDrawerOpen(false)} />)}
+                {navigation.map((item) => <NavLink key={item.href} item={item} onClick={() => setMobileDrawerOpen(false)} />)}
               </nav>
               <div className="p-4 border-t border-border/50">
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all w-full"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
+                <button onClick={handleLogout}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all w-full">
+                  <LogOut className="h-4 w-4" /> Sign Out
                 </button>
               </div>
             </motion.div>
@@ -152,9 +220,10 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      {/* ── MAIN CONTENT ── */}
-      <main className="flex-1 flex flex-col min-h-0 md:ml-64">
+      {/* ── MAIN CONTENT (full width — sidebar overlays) ── */}
+      <main className="flex-1 flex flex-col min-h-0 w-full">
         <div className="h-14 md:hidden shrink-0" />
+        <WelcomeBanner />
         <div className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
           {children}
         </div>
@@ -168,20 +237,15 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
             const isActive = location === tab.href;
             const colors = NAV_COLORS[tab.href] ?? { text: "text-muted-foreground", glow: "" };
             return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 transition-all duration-200 ${isActive ? colors.text : "text-muted-foreground"}`}
-              >
-                <tab.icon className={`h-5 w-5 ${isActive ? `drop-shadow-[0_0_6px_currentColor]` : ""}`} />
+              <Link key={tab.href} href={tab.href}
+                className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 transition-all duration-200 ${isActive ? colors.text : "text-muted-foreground"}`}>
+                <tab.icon className={`h-5 w-5 ${isActive ? "drop-shadow-[0_0_6px_currentColor]" : ""}`} />
                 <span className="text-[10px] font-medium tracking-tight">{tab.name}</span>
               </Link>
             );
           })}
-          <button
-            onClick={() => setDrawerOpen(true)}
-            className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-muted-foreground"
-          >
+          <button onClick={() => setMobileDrawerOpen(true)}
+            className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-muted-foreground">
             <Menu className="h-5 w-5" />
             <span className="text-[10px] font-medium tracking-tight">More</span>
           </button>
