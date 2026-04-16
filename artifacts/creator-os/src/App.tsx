@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/login";
-import { AuroraCursor } from "@/components/aurora-cursor";
 import { WaitlistButton } from "@/components/waitlist-modal";
 
 const ThemeInitializer = () => {
@@ -65,7 +64,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeInitializer />
-        <AuroraCursor />
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <ProtectedRoutes />
           <WaitlistButton />
