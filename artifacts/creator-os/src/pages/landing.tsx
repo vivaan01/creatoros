@@ -133,7 +133,7 @@ export default function Landing() {
 
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight mb-6">
-            Your AI Clone.{" "}
+            Your AI AVATAR.{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500">
               Your Revenue.
             </span>
@@ -207,30 +207,55 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
-      <section className="relative z-10 py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn className="text-center mb-14">
+      {/* ── FEATURES (horizontal scroll carousel) ── */}
+      <section className="relative z-10 py-20">
+        <div className="max-w-6xl mx-auto px-4">
+          <FadeIn className="text-center mb-10">
             <p className="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-2">Everything You Need</p>
             <h2 className="text-3xl sm:text-4xl font-black">One Dashboard. Infinite Power.</h2>
             <p className="text-muted-foreground mt-3 max-w-xl mx-auto text-sm">
               Stop juggling 10 tools. CreatorOS is the only platform built from the ground up for how Indian creators actually work.
             </p>
           </FadeIn>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {FEATURES.map(({ icon: Icon, title, desc, color, glow }, i) => (
-              <FadeIn key={title} delay={i * 0.07}>
-                <div className="h-full p-5 rounded-2xl border border-white/5 bg-card/60 backdrop-blur hover:border-white/10 transition-all group"
-                  style={{ boxShadow: `0 0 0 0 ${glow}` }}
-                  onMouseEnter={(e) => (e.currentTarget.style.boxShadow = `0 0 30px ${glow}`)}
-                  onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}>
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 bg-white/5 ${color}`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-bold text-foreground mb-2">{title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+
+          {/* Drag hint */}
+          <FadeIn className="flex items-center justify-center gap-2 mb-5 text-xs text-muted-foreground/70">
+            <motion.span
+              animate={{ x: [0, 10, 0] }}
+              transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+              className="text-base"
+            >
+              →
+            </motion.span>
+            <span className="tracking-wide">Drag right to explore features</span>
+            <motion.span
+              animate={{ x: [0, 10, 0] }}
+              transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut", delay: 0.15 }}
+              className="text-base"
+            >
+              →
+            </motion.span>
+          </FadeIn>
+
+          {/* Scrollable row */}
+          <div
+            className="flex gap-4 overflow-x-auto pb-4 cursor-grab active:cursor-grabbing select-none"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {FEATURES.map(({ icon: Icon, title, desc, color, glow }) => (
+              <div
+                key={title}
+                className="flex-none w-72 p-5 rounded-2xl border border-white/5 bg-card/60 backdrop-blur hover:border-white/10 transition-all"
+                style={{ minWidth: 280 }}
+                onMouseEnter={(e) => (e.currentTarget.style.boxShadow = `0 0 30px ${glow}`)}
+                onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
+              >
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 bg-white/5 ${color}`}>
+                  <Icon className="h-5 w-5" />
                 </div>
-              </FadeIn>
+                <h3 className="font-bold text-foreground mb-2">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+              </div>
             ))}
           </div>
         </div>

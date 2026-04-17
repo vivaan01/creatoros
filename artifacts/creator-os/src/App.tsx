@@ -54,6 +54,9 @@ function AppRoutes() {
     );
   }
 
+  // Landing page accessible from inside the app too
+  if (location === "/landing") return <Landing />;
+
   return (
     <SidebarLayout>
       <React.Suspense fallback={<div className="p-8 text-muted-foreground animate-pulse">Loading…</div>}>

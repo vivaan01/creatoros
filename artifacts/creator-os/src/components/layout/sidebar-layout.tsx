@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard, Bot, Megaphone, ShoppingBag, TrendingUp,
-  MessageSquare, FileText, LogOut, Sprout, Menu, X, ChevronRight,
+  MessageSquare, FileText, LogOut, Sprout, Menu, X, ChevronRight, Home, User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -49,6 +49,23 @@ function NavLink({ item, onClick }: { item: typeof navigation[0]; onClick?: () =
       <item.icon className={`h-4 w-4 shrink-0 ${isActive ? colors.text : ""}`} />
       <span className="truncate">{item.name}</span>
     </Link>
+  );
+}
+
+/* ── Demo user profile pill ── */
+function DemoUserProfile() {
+  const name = localStorage.getItem("cos_user_name");
+  if (!name) return null;
+  return (
+    <div className="mx-4 mb-2 mt-1 px-3 py-2 rounded-xl bg-orange-500/8 border border-orange-500/20 flex items-center gap-2.5">
+      <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg,#f97316,#f59e0b)" }}>
+        <User className="h-3.5 w-3.5 text-white" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs font-bold text-orange-300 truncate">{name}</p>
+        <p className="text-[10px] text-muted-foreground">Demo Mode</p>
+      </div>
+    </div>
   );
 }
 
@@ -140,13 +157,24 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
           onMouseEnter={handleSidebarEnter}
           onMouseLeave={handleSidebarLeave}
         >
-          <div className="p-4 mb-2">
+          <div className="p-4 pb-2">
             <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-300">
               CreatorOS
             </h1>
             <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Bharat Edition</p>
           </div>
-          <nav className="flex flex-col gap-1 flex-1 px-4 overflow-y-auto">
+
+          {/* Demo user profile */}
+          <DemoUserProfile />
+
+          <nav className="flex flex-col gap-1 flex-1 px-4 overflow-y-auto pb-2">
+            {/* Home page link */}
+            <Link href="/landing"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium border border-transparent text-muted-foreground hover:bg-muted hover:text-foreground mb-1">
+              <Home className="h-4 w-4 shrink-0" />
+              <span>Home Page</span>
+            </Link>
+            <div className="h-px bg-border/40 mb-1" />
             {navigation.map((item) => <NavLink key={item.href} item={item} />)}
           </nav>
           <div className="p-4 border-t border-border/50">
@@ -206,7 +234,14 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                   <X className="h-4 w-4" />
                 </button>
               </div>
+              <DemoUserProfile />
               <nav className="flex flex-col gap-1 flex-1 p-3 overflow-y-auto">
+                <Link href="/landing" onClick={() => setMobileDrawerOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-md transition-all text-sm font-medium border border-transparent text-muted-foreground hover:bg-muted hover:text-foreground mb-1">
+                  <Home className="h-4 w-4 shrink-0" />
+                  <span>Home Page</span>
+                </Link>
+                <div className="h-px bg-border/40 mb-1" />
                 {navigation.map((item) => <NavLink key={item.href} item={item} onClick={() => setMobileDrawerOpen(false)} />)}
               </nav>
               <div className="p-4 border-t border-border/50">
