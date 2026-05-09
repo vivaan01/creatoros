@@ -1,0 +1,21 @@
+I need you to extract and document every single detail so that another AI can build an exact replica. Please help me systematically capture all information by asking me the following questions in order, and wait for my answers before moving to the next section.
+
+Section one: General Overview. What is the app name? What is its primary purpose? Who are the target users? What are the main features?
+
+Section two: Page and Navigation Structure. How many pages or sections does the app have? List each one. How do users navigate between pages? Are there menus, buttons, or links? Draw or describe the navigation flow.
+
+Section three: Visual Design and Colors. What is the primary brand color in hex code? List every color used throughout the app with hex codes. What fonts are used? Provide exact font names and sizes for headings, body text, and buttons. What is the spacing and padding around elements? What border radius values are used?
+
+Section four: Layout and Components. For each page, describe from top to bottom: What elements are visible? What is their exact position and size? What are the background colors, text colors, and border styles? What images or icons are used?
+
+Section five: Interactive States. For buttons, inputs, and clickable elements, describe: What does the normal state look like? What does the hover state look like? What does the active or pressed state look like? What does the disabled state look like?
+
+Section six: Animations and Transitions. What animations exist in the app? Describe exactly what moves, fades, or changes. How long does each animation take in milliseconds? What easing function is used? When are they triggered?
+
+Section seven: Functionality and Logic. For each feature, explain: What does the user do to trigger it? What happens immediately after? What data is displayed? Are there success or error messages? How long do loading states appear?
+
+Section eight: Forms and Validation. What forms exist? What are the input fields? What validation rules apply? What error messages appear for each validation failure? What success messages appear?
+
+Section nine: Responsive Design. How does the layout change on mobile versus desktop? At what screen widths do layouts change? Are there specific breakpoints? How do images scale? How do buttons and spacing adjust?
+
+Section ten: Special Effects and Details. Are there shadows, gradients, or other effects? Are there animations on page load? Are there scroll effects? Any other visual details I should know?
