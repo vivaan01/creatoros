@@ -106,7 +106,7 @@ export default function Dashboard() {
   }
 
   // Build aggregate funnel across all campaigns
-  const aggFunnel = funnel && funnel.length > 0
+  const aggFunnel = Array.isArray(funnel) && funnel.length > 0
     ? funnel.reduce((acc, c) => ({
         comments: acc.comments + c.comments,
         dms: acc.dms + c.dmsInitiated,
@@ -116,7 +116,7 @@ export default function Dashboard() {
     : null;
 
   // Format trend data dates to short form
-  const trendFormatted = (trend ?? []).map((d) => ({
+  const trendFormatted = (Array.isArray(trend) ? trend : []).map((d) => ({
     ...d,
     label: new Date(d.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
   }));
@@ -135,7 +135,7 @@ export default function Dashboard() {
           </motion.h1>
           <p className="text-muted-foreground mt-1 text-sm">Your avatar's real-time performance — numbers brands actually care about.</p>
         </div>
-        {profile && (
+        {profile && profile.name && (
           <div className="flex items-center gap-3">
             <div className="text-right hidden md:block">
               <p className="text-sm font-semibold">{profile.name}</p>
@@ -149,7 +149,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stat cards */}
-      {summary && (
+      {summary && summary.totalRevenue !== undefined && (
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total Revenue"
@@ -166,7 +166,7 @@ export default function Dashboard() {
       )}
 
       {/* Second row stat cards */}
-      {summary && (
+      {summary && summary.totalRevenue !== undefined && (
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           <StatCard title="This Month Revenue" value={formatINRCompact(summary.revenueThisMonth)} sub="Current period" icon={TrendingUp} delay={0.1} />
           <StatCard title="This Month Sales" value={summary.conversionsThisMonth.toLocaleString()} sub="Purchases confirmed" icon={Star} delay={0.14} />
@@ -230,8 +230,8 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {(topProducts ?? []).map((product, i) => {
-                  const maxRevenue = Math.max(...(topProducts ?? []).map((p) => p.totalRevenue));
+                {(Array.isArray(topProducts) ? topProducts : []).map((product, i) => {
+                  const maxRevenue = Math.max(...(Array.isArray(topProducts) ? topProducts : []).map((p) => p.totalRevenue));
                   const pct = maxRevenue > 0 ? (product.totalRevenue / maxRevenue) * 100 : 0;
                   return (
                     <motion.div

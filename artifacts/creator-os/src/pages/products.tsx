@@ -111,7 +111,7 @@ export default function Products() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products?.map(product => (
+        {(Array.isArray(products) ? products : []).map(product => (
           <Card key={product.id} className="bg-card/50 border-border/50 flex flex-col overflow-hidden group">
             <div className="h-32 bg-muted flex items-center justify-center border-b border-border/50 relative">
               <ShoppingBag className="h-8 w-8 text-muted-foreground/30" />

@@ -53,8 +53,8 @@ export default function Report() {
             {formatINR(summary?.totalRevenue || 0)}
           </h3>
           <div className="flex justify-center gap-8 text-sm">
-            <div><span className="font-bold">{summary?.totalConversions?.toLocaleString()}</span> Sales Generated</div>
-            <div><span className="font-bold">{summary?.totalBrands}</span> Brand Partners</div>
+            <div><span className="font-bold">{summary?.totalConversions?.toLocaleString() ?? 0}</span> Sales Generated</div>
+            <div><span className="font-bold">{summary?.totalBrands ?? 0}</span> Brand Partners</div>
           </div>
         </div>
 
@@ -68,15 +68,15 @@ export default function Report() {
             <div className="space-y-4">
               <div className="flex justify-between items-center border-b border-border/30 pb-2">
                 <span className="text-sm">Avg. Conversion Rate</span>
-                <span className="font-bold text-lg">{summary?.avgConversionRate.toFixed(1)}%</span>
+                <span className="font-bold text-lg">{summary?.avgConversionRate?.toFixed(1) ?? '0.0'}%</span>
               </div>
               <div className="flex justify-between items-center border-b border-border/30 pb-2">
                 <span className="text-sm">DMs Handled via AI</span>
-                <span className="font-bold text-lg">{summary?.totalDmsHandled.toLocaleString()}</span>
+                <span className="font-bold text-lg">{summary?.totalDmsHandled?.toLocaleString() ?? 0}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Active Campaigns</span>
-                <span className="font-bold text-lg">{summary?.activeCampaigns}</span>
+                <span className="font-bold text-lg">{summary?.activeCampaigns ?? 0}</span>
               </div>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function Report() {
               <h4 className="font-medium text-sm uppercase tracking-wider">Top Performing Products</h4>
             </div>
             <div className="space-y-4">
-              {topProducts?.slice(0,3).map((p, i) => (
+              {(Array.isArray(topProducts) ? topProducts : []).slice(0,3).map((p, i) => (
                 <div key={p.productId} className="flex justify-between items-center border-b border-border/30 pb-2 last:border-0 last:pb-0">
                   <div className="flex items-center gap-3">
                     <span className="text-muted-foreground text-xs font-mono">{i+1}</span>

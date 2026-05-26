@@ -28,7 +28,7 @@ export default function Conversations() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {conversations?.map((conv) => (
+        {(Array.isArray(conversations) ? conversations : []).map((conv) => (
           <Card 
             key={conv.id} 
             className="bg-card/50 border-border/50 hover:border-primary/50 transition-colors cursor-pointer"
@@ -72,7 +72,7 @@ export default function Conversations() {
             {isDetailLoading ? (
               <div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
             ) : (
-              detail?.messages?.map((msg) => (
+              (Array.isArray(detail?.messages) ? detail.messages : []).map((msg) => (
                 <div key={msg.id} className={`flex ${msg.role === 'avatar' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`rounded-2xl px-4 py-2 max-w-[85%] text-sm ${
                     msg.role === 'avatar' 

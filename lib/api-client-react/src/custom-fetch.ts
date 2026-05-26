@@ -330,6 +330,96 @@ export async function customFetch<T = unknown>(
   const { responseType = "auto", headers: headersInit, ...init } = options;
 
   const method = resolveMethod(input, init.method);
+  const urlStr = resolveUrl(input);
+
+  // MOCK INTERCEPTOR FOR DEMO DATA
+  if (method === "GET") {
+    if (urlStr.includes("/api/dashboard/summary")) {
+      return {
+        totalRevenue: 154200,
+        revenueGrowthPct: 12.4,
+        totalDmsHandled: 450,
+        totalConversions: 89,
+        avgConversionRate: 15.6,
+        revenueThisMonth: 45000,
+        conversionsThisMonth: 24,
+        activeCampaigns: 3,
+        totalBrands: 5
+      } as unknown as T;
+    }
+    if (urlStr.includes("/api/dashboard/trend")) {
+      return [
+        { date: "2026-05-01", revenue: 1000 },
+        { date: "2026-05-05", revenue: 2500 },
+        { date: "2026-05-10", revenue: 4000 },
+        { date: "2026-05-15", revenue: 3800 },
+        { date: "2026-05-20", revenue: 6000 },
+        { date: "2026-05-25", revenue: 7500 },
+        { date: "2026-05-30", revenue: 9000 },
+      ] as unknown as T;
+    }
+    if (urlStr.includes("/api/dashboard/funnel")) {
+      return [
+        { comments: 500, dmsInitiated: 400, linksClicked: 150, purchases: 45 },
+        { comments: 300, dmsInitiated: 250, linksClicked: 80, purchases: 20 },
+      ] as unknown as T;
+    }
+    if (urlStr.includes("/api/dashboard/top-products")) {
+      return [
+        { productId: 1, name: "Premium Hoodie", category: "Apparel", totalSales: 15, totalRevenue: 30000 },
+        { productId: 2, name: "Digital Guide", category: "Digital", totalSales: 40, totalRevenue: 20000 },
+        { productId: 3, name: "1-on-1 Consult", category: "Service", totalSales: 5, totalRevenue: 15000 },
+      ] as unknown as T;
+    }
+    if (urlStr.includes("/api/creators/me")) {
+      return {
+        id: 1,
+        name: "Rahul Sharma",
+        handle: "rahul_creates",
+        platform: "instagram",
+        followerCount: 150000,
+        status: "active"
+      } as unknown as T;
+    }
+    if (urlStr.includes("/api/campaigns")) {
+      return [
+        { id: 1, brandName: "TechGear", productName: "Pro Keyboard", status: "active", revenue: 45000, roi: 3.5, conversionRate: 12.5 },
+        { id: 2, brandName: "FitSnacks", productName: "Protein Bars", status: "completed", revenue: 12000, roi: 2.1, conversionRate: 8.4 },
+        { id: 3, brandName: "Aura Skincare", productName: "Glow Serum", status: "draft", revenue: 0, roi: 0, conversionRate: 0 },
+      ] as unknown as T;
+    }
+    if (urlStr.includes("/api/products")) {
+      return [
+        { id: 1, name: "Premium Hoodie", description: "Black cotton hoodie", price: 2000, stock: 50, category: "Apparel", status: "active" },
+        { id: 2, name: "Digital Guide", description: "How to grow on IG", price: 500, stock: 999, category: "Digital", status: "active" },
+        { id: 3, name: "1-on-1 Consult", description: "30 min call", price: 3000, stock: 10, category: "Service", status: "inactive" },
+      ] as unknown as T;
+    }
+    if (urlStr.includes("/api/links")) {
+      return [
+        { id: 1, shortCode: "tg-key", destinationUrl: "https://techgear.com/key", label: "Instagram Bio", totalClicks: 1200, uniqueClicks: 950, conversions: 45, revenue: 45000, status: "active", campaignId: 1, productId: 1 },
+        { id: 2, shortCode: "fs-bar", destinationUrl: "https://fitsnacks.com/bar", label: "YouTube Desc", totalClicks: 800, uniqueClicks: 620, conversions: 30, revenue: 12000, status: "active", campaignId: 2, productId: 2 },
+      ] as unknown as T;
+    }
+    if (urlStr.includes("/api/conversations")) {
+      if (urlStr.match(/\/api\/conversations\/\d+/)) {
+        return {
+          conversation: { id: 1, followerHandle: "tech_bro", platform: "instagram", status: "converted", triggerComment: "Price?", messageCount: 4, revenueGenerated: 2000 },
+          messages: [
+            { id: 1, role: "follower", content: "Price?" },
+            { id: 2, role: "avatar", content: "Hey! The keyboard is ₹2000. Use code RAHUL10 for 10% off. Link: tg-key" },
+            { id: 3, role: "follower", content: "Done, bought it." },
+            { id: 4, role: "avatar", content: "Awesome! Let me know how you like it." },
+          ]
+        } as unknown as T;
+      }
+      return [
+        { id: 1, followerHandle: "tech_bro", platform: "instagram", status: "converted", triggerComment: "Price?", messageCount: 4, revenueGenerated: 2000 },
+        { id: 2, followerHandle: "gym_rat", platform: "instagram", status: "active", triggerComment: "Is this vegan?", messageCount: 2, revenueGenerated: 0 },
+        { id: 3, followerHandle: "random_user", platform: "instagram", status: "dropped", triggerComment: "Nice video", messageCount: 1, revenueGenerated: 0 },
+      ] as unknown as T;
+    }
+  }
 
   if (init.body != null && (method === "GET" || method === "HEAD")) {
     throw new TypeError(`customFetch: ${method} requests cannot have a body.`);

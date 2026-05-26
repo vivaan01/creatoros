@@ -118,7 +118,7 @@ export default function Campaigns() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {campaigns?.map(campaign => (
+        {(Array.isArray(campaigns) ? campaigns : []).map(campaign => (
           <Card key={campaign.id} className="bg-card/50 border-border/50 hover:border-primary/50 transition-colors flex flex-col">
             <CardContent className="p-5 flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-4">

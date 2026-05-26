@@ -224,7 +224,7 @@ export default function Links() {
                   <SelectTrigger><SelectValue placeholder="Select campaign" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">None</SelectItem>
-                    {campaigns?.map((c) => <SelectItem key={c.id} value={String(c.id)}>{c.brandName}</SelectItem>)}
+                    {(Array.isArray(campaigns) ? campaigns : []).map((c) => <SelectItem key={c.id} value={String(c.id)}>{c.brandName}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -234,7 +234,7 @@ export default function Links() {
                   <SelectTrigger><SelectValue placeholder="Select product" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">None</SelectItem>
-                    {products?.map((p) => <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>)}
+                    {(Array.isArray(products) ? products : []).map((p) => <SelectItem key={p.id} value={String(p.id)}>{p.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -326,7 +326,7 @@ export default function Links() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {links?.map((link) => (
+                {(Array.isArray(links) ? links : []).map((link) => (
                   <TableRow key={link.id} className="hover:bg-muted/10 transition-colors">
                     <TableCell className="font-mono text-sm font-medium text-primary">/{link.shortCode}</TableCell>
                     <TableCell>
