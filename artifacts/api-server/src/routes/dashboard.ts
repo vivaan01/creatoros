@@ -85,7 +85,7 @@ router.get("/dashboard/revenue-trend", async (_req, res): Promise<void> => {
     ORDER BY gs.day ASC
   `);
 
-  const trend = (rows.rows as Array<{ date: Date; revenue: string; conversions: string }>).map((r) => ({
+  const trend = (rows.rows as Array<{ date: Date | string; revenue: string; conversions: string }>).map((r) => ({
     date: typeof r.date === "string" ? r.date.slice(0, 10) : new Date(r.date).toISOString().slice(0, 10),
     revenue: parseFloat(r.revenue),
     conversions: parseInt(String(r.conversions), 10),

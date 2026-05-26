@@ -39,10 +39,10 @@ router.post("/campaigns", async (req, res): Promise<void> => {
     .values({
       brandName: parsed.data.brandName,
       productName: parsed.data.productName,
-      platform: parsed.data.platform,
-      dealValue: String(parsed.data.dealValue),
-      startDate: parsed.data.startDate,
-      endDate: parsed.data.endDate ?? null,
+      platform: parsed.data.platform ?? "instagram",
+      dealValue: String(parsed.data.dealValue ?? 0),
+      startDate: parsed.data.startDate instanceof Date ? parsed.data.startDate.toISOString().split('T')[0] : parsed.data.startDate,
+      endDate: parsed.data.endDate ? (parsed.data.endDate instanceof Date ? parsed.data.endDate.toISOString().split('T')[0] : parsed.data.endDate) : null,
       status: "draft",
     })
     .returning();
@@ -84,7 +84,7 @@ router.patch("/campaigns/:id", async (req, res): Promise<void> => {
       ...(parsed.data.productName != null ? { productName: parsed.data.productName } : {}),
       ...(parsed.data.status != null ? { status: parsed.data.status } : {}),
       ...(parsed.data.dealValue != null ? { dealValue: String(parsed.data.dealValue) } : {}),
-      ...(parsed.data.endDate !== undefined ? { endDate: parsed.data.endDate } : {}),
+      ...(parsed.data.endDate !== undefined && parsed.data.endDate !== null ? { endDate: parsed.data.endDate instanceof Date ? parsed.data.endDate.toISOString().split('T')[0] : parsed.data.endDate } : {}),
     })
     .where(eq(campaignsTable.id, params.data.id))
     .returning();
