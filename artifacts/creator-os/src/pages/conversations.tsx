@@ -10,7 +10,7 @@ export default function Conversations() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const { data: detail, isLoading: isDetailLoading } = useGetConversation(selectedId as number, { 
-    query: { enabled: !!selectedId } 
+    query: { enabled: !!selectedId } as any
   });
 
   const formatINR = (value: number) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(value);

@@ -101,7 +101,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
   // Desktop hover-reveal sidebar state
   const [desktopOpen, setDesktopOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Track mouse X to reveal sidebar when near left edge
   const handleMouseMove = useCallback((e: MouseEvent) => {
